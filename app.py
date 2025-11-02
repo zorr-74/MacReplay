@@ -1066,9 +1066,9 @@ def channel(portalId, channelId):
                 # only check membership if channelName is set
                 if channelName and channelName in fallbackChannels.values():
                     # existing fallback logic unchanged
-    logger.info(
-        "IP({}) requested Portal({}):Channel({})".format(ip, portalId, channelId)
-    )
+        logger.info(
+            "IP({}) requested Portal({}):Channel({})".format(ip, portalId, channelId)
+        )
 
     freeMac = False
 
