@@ -540,11 +540,14 @@ def editor_data():
 @app.route("/editor/save", methods=["POST"])
 @authorise
 def editorSave():
-    global cached_xmltv
-    #cached_xmltv = None # The tv guide will be updated next time its downloaded
-    threading.Thread(target=refresh_xmltv, daemon=True).start() #Force update in a seperate thread
-    last_playlist_host = None     # The playlist will be updated next time it is downloaded
-    Thread(target=refresh_lineup).start() # Update the channel lineup for plex.
+    global cached_xmltv, last_playlist_host
+    # clear the xmltv cache so the tv guide will be updated next time it's requested
+    cached_xmltv = None
+    # clear the playlist host cache so a changed host will regenerate the playlist
+    last_playlist_host = None
+    # Force update in separate daemon threads so the HTTP request can return immediately
+    threading.Thread(target=refresh_xmltv, daemon=True).start()
+    Thread(target=refresh_lineup, daemon=True).start()
     enabledEdits = json.loads(request.form["enabledEdits"])
     numberEdits = json.loads(request.form["numberEdits"])
     nameEdits = json.loads(request.form["nameEdits"])
