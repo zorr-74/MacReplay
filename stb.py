@@ -1,3 +1,4 @@
+# stb.py
 import logging
 import re
 from typing import Any, Dict, List, Optional
@@ -29,18 +30,15 @@ s.mount("https://", HTTPAdapter(max_retries=retries))
 
 DEFAULT_TIMEOUT = 5.0  # Sekunden
 
-
 def _build_headers(token: Optional[str] = None) -> Dict[str, str]:
     headers = {"User-Agent": "Mozilla/5.0 (QtEmbedded; U; Linux; C)"}
     if token:
         headers["Authorization"] = f"Bearer {token}"
     return headers
 
-
 def _build_cookies(mac: str) -> Dict[str, str]:
     # timezone und Sprache sind hartcodiert wie im Original
     return {"mac": mac, "stb_lang": "en", "timezone": "Europe/London"}
-
 
 def _request_get(
     url: str, *, proxies: Optional[Dict[str, str]] = None, **kwargs
@@ -52,7 +50,6 @@ def _request_get(
     except RequestException as e:
         logger.debug("HTTP GET failed for %s: %s", url, e)
         return None
-
 
 def getUrl(target_url: str, proxy: Optional[str] = None) -> Optional[str]:
     """
@@ -144,7 +141,6 @@ def getUrl(target_url: str, proxy: Optional[str] = None) -> Optional[str]:
     logger.debug("Kein passendes xpcom.common.js gefunden für %s", target_url)
     return None
 
-
 def getToken(url: str, mac: str, proxy: Optional[str] = None) -> Optional[str]:
     """
     Führt Handshake aus und gibt token zurück oder None.
@@ -165,7 +161,6 @@ def getToken(url: str, mac: str, proxy: Optional[str] = None) -> Optional[str]:
         logger.debug("JSON-Decode-Fehler in getToken: %s", e)
     return None
 
-
 def getProfile(url: str, mac: str, token: str, proxy: Optional[str] = None) -> Optional[Dict[str, Any]]:
     proxies = {"http": proxy, "https": proxy} if proxy else None
     cookies = _build_cookies(mac)
@@ -181,7 +176,6 @@ def getProfile(url: str, mac: str, token: str, proxy: Optional[str] = None) -> O
     except (ValueError, JSONDecodeError) as e:
         logger.debug("JSON-Decode-Fehler in getProfile: %s", e)
         return None
-
 
 def getExpires(url: str, mac: str, token: str, proxy: Optional[str] = None) -> Optional[Any]:
     """
@@ -202,7 +196,6 @@ def getExpires(url: str, mac: str, token: str, proxy: Optional[str] = None) -> O
         logger.debug("JSON-Decode-Fehler in getExpires: %s", e)
         return None
 
-
 def getAllChannels(url: str, mac: str, token: str, proxy: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
     proxies = {"http": proxy, "https": proxy} if proxy else None
     cookies = _build_cookies(mac)
@@ -218,7 +211,6 @@ def getAllChannels(url: str, mac: str, token: str, proxy: Optional[str] = None) 
         logger.debug("JSON-Decode-Fehler in getAllChannels: %s", e)
         return None
 
-
 def getGenres(url: str, mac: str, token: str, proxy: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
     proxies = {"http": proxy, "https": proxy} if proxy else None
     cookies = _build_cookies(mac)
@@ -233,7 +225,6 @@ def getGenres(url: str, mac: str, token: str, proxy: Optional[str] = None) -> Op
     except (ValueError, JSONDecodeError) as e:
         logger.debug("JSON-Decode-Fehler in getGenres: %s", e)
         return None
-
 
 def getGenreNames(url: str, mac: str, token: str, proxy: Optional[str] = None) -> Optional[Dict[str, str]]:
     genre_data = getGenres(url, mac, token, proxy)
@@ -251,7 +242,6 @@ def getGenreNames(url: str, mac: str, token: str, proxy: Optional[str] = None) -
     except Exception as e:
         logger.debug("Fehler beim Aufbau von Genre-Namen: %s", e)
         return None
-
 
 def getLink(url: str, mac: str, token: str, cmd: str, proxy: Optional[str] = None) -> Optional[str]:
     proxies = {"http": proxy, "https": proxy} if proxy else None
@@ -276,7 +266,6 @@ def getLink(url: str, mac: str, token: str, cmd: str, proxy: Optional[str] = Non
     except (ValueError, JSONDecodeError, AttributeError, IndexError) as e:
         logger.debug("Fehler beim Parsen des Links: %s", e)
         return None
-
 
 def getEpg(url: str, mac: str, token: str, period: int, proxy: Optional[str] = None) -> Optional[List[Dict[str, Any]]]:
     proxies = {"http": proxy, "https": proxy} if proxy else None
