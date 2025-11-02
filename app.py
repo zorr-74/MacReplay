@@ -1046,7 +1046,26 @@ def channel(portalId, channelId):
     proxy = portal.get("proxy")
     web = request.args.get("web")
     ip = request.remote_addr
+    # --- INITIALIZE channelName to avoid UnboundLocalError later ---
+    # Try to use a custom channel name if present; otherwise keep None and
+    # set the actual name later when channel metadata is available.
+    channelName = portal.get("custom channel names", {}).get(channelId)
+    # ----------------------------------------------------------------
+    ...
+    if not web:
+        logger.info(
+            "Portal({}):Channel({}) is not working. Looking for fallbacks...".format(
+                portalId, channelId
+            )
+        )
 
+        portals = getPortals()
+        for portal in portals:
+            if portals[portal]["enabled"] == "true":
+                fallbackChannels = portals[portal].get("fallback channels", {})
+                # only check membership if channelName is set
+                if channelName and channelName in fallbackChannels.values():
+                    # existing fallback logic unchanged
     logger.info(
         "IP({}) requested Portal({}):Channel({})".format(ip, portalId, channelId)
     )
